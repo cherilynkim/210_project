@@ -1,0 +1,9 @@
+[package]
+name = "210_project"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+csv = "1.1"
+serde = { version = "1.0", features = ["derive"] }
+assert_approx_eq = "1.1"
