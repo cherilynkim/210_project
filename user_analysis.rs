@@ -81,3 +81,52 @@ pub fn compute_distance_2_neighbors(transactions: &[Transaction]) -> HashMap<Str
 
     distance_2_neighbors
 }
+pub fn build_category_connections(transactions: &[Transaction]) -> HashMap<String, HashSet<String>> {
+    let mut category_to_users = HashMap::new();
+    let mut category_graph = HashMap::new();
+
+    for transaction in transactions {
+        category_to_users
+            .entry(transaction.category.clone())
+            .or_insert_with(HashSet::new)
+            .insert(transaction.user_id.clone());
+    }
+
+    for (_, users) in &category_to_users {
+        for user in users {
+            let connections = category_graph.entry(user.clone()).or_insert_with(HashSet::new);
+            for other_user in users {
+                if user != other_user {
+                    connections.insert(other_user.clone());
+                }
+            }
+        }
+    }
+
+    category_graph
+}
+
+pub fn build_product_connections(transactions: &[Transaction]) -> HashMap<String, HashSet<String>> {
+    let mut product_to_users = HashMap::new();
+    let mut product_graph = HashMap::new();
+
+    for transaction in transactions {
+        product_to_users
+            .entry(transaction.product_id.clone())
+            .or_insert_with(HashSet::new)
+            .insert(transaction.user_id.clone());
+    }
+
+    for (product, users) in &product_to_users {
+        for user in users {
+            let connections = product_graph.entry(product.clone()).or_insert_with(HashSet::new);
+            for other_product in users {
+                if product != other_product {
+                    connections.insert(user.clone());
+                }
+            }
+        }
+    }
+
+    product_graph
+}
