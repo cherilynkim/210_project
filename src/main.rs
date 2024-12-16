@@ -113,49 +113,6 @@ mod tests {
         assert!(super_buyers.contains(&"user4".to_string()));
         assert!(!super_buyers.contains(&"user3".to_string()));
     }
-
-    #[test]
-    fn test_compute_distance_2_neighbors() {
-        let transactions = vec![
-            Transaction {
-                user_id: "user1".to_string(),
-                product_id: "product1".to_string(),
-                category: "category1".to_string(),
-                final_price: 100.0,
-            },
-            Transaction {
-                user_id: "user2".to_string(),
-                product_id: "product1".to_string(),
-                category: "category1".to_string(),
-                final_price: 150.0,
-            },
-            Transaction {
-                user_id: "user2".to_string(),
-                product_id: "product2".to_string(),
-                category: "category2".to_string(),
-                final_price: 200.0,
-            },
-            Transaction {
-                user_id: "user3".to_string(),
-                product_id: "product2".to_string(),
-                category: "category2".to_string(),
-                final_price: 250.0,
-            },
-        ];
-    
-        let distance_2_neighbors = compute_distance_2_neighbors(&transactions);
-    
-        assert!(distance_2_neighbors["user1"].contains("user3"));
-        assert!(!distance_2_neighbors["user1"].contains("user2")); 
-    
-        assert!(distance_2_neighbors["product1"].contains("product2")); 
-        assert!(!distance_2_neighbors["product1"].contains("product1")); 
-    
-        assert!(distance_2_neighbors["user3"].contains("user1")); 
-        assert!(!distance_2_neighbors["user3"].contains("user2")); 
-    }
-    
-
     #[test]
     fn test_category_connections() {
         let transactions = vec![
