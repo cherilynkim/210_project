@@ -79,3 +79,103 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    #[allow(unused_imports)]
+    use super::*;
+    use crate::csv_utils::Transaction;
+    use crate::user_analysis::{identify_super_buyers, build_category_connections};
+    use std::collections::HashMap;
+
+    #[test]
+    fn test_super_buyers() {
+        let user_summary = HashMap::from([
+            ("user1".to_string(), (10, 500.0)),
+            ("user2".to_string(), (3, 1200.0)),
+            ("user3".to_string(), (2, 800.0)),
+            ("user4".to_string(), (6, 1500.0)),
+        ]);
+
+        let purchase_threshold = 5;
+        let spending_threshold = 1000.0;
+
+        let super_buyers = identify_super_buyers(&user_summary, purchase_threshold, spending_threshold);
+
+        assert!(super_buyers.contains(&"user1".to_string()));
+        assert!(super_buyers.contains(&"user2".to_string()));
+        assert!(super_buyers.contains(&"user4".to_string()));
+        assert!(!super_buyers.contains(&"user3".to_string()));
+    }
+
+    #[test]
+    fn test_compute_distance_2_neighbors() {
+        let transactions = vec![
+            Transaction {
+                user_id: "user1".to_string(),
+                product_id: "product1".to_string(),
+                category: "category1".to_string(),
+                final_price: 100.0,
+            },
+            Transaction {
+                user_id: "user2".to_string(),
+                product_id: "product1".to_string(),
+                category: "category1".to_string(),
+                final_price: 150.0,
+            },
+            Transaction {
+                user_id: "user2".to_string(),
+                product_id: "product2".to_string(),
+                category: "category2".to_string(),
+                final_price: 200.0,
+            },
+            Transaction {
+                user_id: "user3".to_string(),
+                product_id: "product2".to_string(),
+                category: "category2".to_string(),
+                final_price: 250.0,
+            },
+        ];
+    
+        let distance_2_neighbors = compute_distance_2_neighbors(&transactions);
+    
+        assert!(distance_2_neighbors["user1"].contains("user3")); // user1 -> product1 -> user2 -> product2 -> user3
+        assert!(!distance_2_neighbors["user1"].contains("user2")); // user2 is a direct neighbor, not distance-2
+    
+        assert!(distance_2_neighbors["product1"].contains("product2")); // product1 -> user2 -> product2
+        assert!(!distance_2_neighbors["product1"].contains("product1")); // Self-loops should not exist
+    
+        assert!(distance_2_neighbors["user3"].contains("user1")); // user3 -> product2 -> user2 -> product1 -> user1
+        assert!(!distance_2_neighbors["user3"].contains("user2")); // user2 is a direct neighbor, not distance-2
+    }
+    
+
+    #[test]
+    fn test_category_connections() {
+        let transactions = vec![
+            Transaction {
+                user_id: "user1".to_string(),
+                product_id: "product1".to_string(),
+                category: "category1".to_string(),
+                final_price: 100.0,
+            },
+            Transaction {
+                user_id: "user2".to_string(),
+                product_id: "product2".to_string(),
+                category: "category1".to_string(),
+                final_price: 150.0,
+            },
+            Transaction {
+                user_id: "user3".to_string(),
+                product_id: "product3".to_string(),
+                category: "category2".to_string(),
+                final_price: 200.0,
+            },
+        ];
+
+        let category_connections = build_category_connections(&transactions);
+
+        assert!(category_connections["user1"].contains("user2"));
+        assert!(!category_connections["user1"].contains("user3"));
+    }
+}
