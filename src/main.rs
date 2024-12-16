@@ -40,11 +40,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     let spending_threshold = 1000.0; 
     let super_buyers = identify_super_buyers(&user_summary, purchase_threshold, spending_threshold);
 
+    
     let super_buyer_counts: HashMap<String, usize> = super_buyers
         .iter()
         .map(|user| (user.clone(), user_summary[user].0))
         .collect();
-    display_top_results(&super_buyer_counts, 5, "Super Buyers");
+    if super_buyer_counts.is_empty() {
+        println!("\nNo super buyers found with the current thresholds.");
+    } else {
+        display_top_results(&super_buyer_counts, 5, "Super Buyers");
+    }
+    //or display_top_results(&super_buyer_counts, 5, "Super Buyers");
 
     println!("\nDegree Distribution:");
     let (user_degrees, product_degrees) = degree_distribution(&transactions);
