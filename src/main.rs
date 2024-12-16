@@ -8,7 +8,7 @@ use std::collections::{HashMap, HashSet};
 
 fn display_top_results(results: &HashMap<String, usize>, top_n: usize, label: &str) {
     let mut sorted_results: Vec<_> = results.iter().collect();
-    sorted_results.sort_by(|a, b| b.1.cmp(a.1)); // Sort by value descending
+    sorted_results.sort_by(|a, b| b.1.cmp(a.1)); 
 
     println!("\nTop {} {}:", top_n, label);
     for (key, value) in sorted_results.into_iter().take(top_n) {
@@ -22,7 +22,7 @@ fn display_top_connected_products(product_connections: &HashMap<String, HashSet<
         .map(|(product, connections)| (product, connections.len()))
         .collect();
 
-    products.sort_by(|a, b| b.1.cmp(&a.1)); // Sort by number of connections descending
+    products.sort_by(|a, b| b.1.cmp(&a.1));
 
     println!("\nTop {} Products by Connections:", top_n);
     for (product, connection_count) in products.into_iter().take(top_n) {
@@ -139,14 +139,14 @@ mod tests {
     
         let distance_2_neighbors = compute_distance_2_neighbors(&transactions);
     
-        assert!(distance_2_neighbors["user1"].contains("user3")); // user1 -> product1 -> user2 -> product2 -> user3
-        assert!(!distance_2_neighbors["user1"].contains("user2")); // user2 is a direct neighbor, not distance-2
+        assert!(distance_2_neighbors["user1"].contains("user3"));
+        assert!(!distance_2_neighbors["user1"].contains("user2")); 
     
-        assert!(distance_2_neighbors["product1"].contains("product2")); // product1 -> user2 -> product2
-        assert!(!distance_2_neighbors["product1"].contains("product1")); // Self-loops should not exist
+        assert!(distance_2_neighbors["product1"].contains("product2")); 
+        assert!(!distance_2_neighbors["product1"].contains("product1")); 
     
-        assert!(distance_2_neighbors["user3"].contains("user1")); // user3 -> product2 -> user2 -> product1 -> user1
-        assert!(!distance_2_neighbors["user3"].contains("user2")); // user2 is a direct neighbor, not distance-2
+        assert!(distance_2_neighbors["user3"].contains("user1")); 
+        assert!(!distance_2_neighbors["user3"].contains("user2")); 
     }
     
 
